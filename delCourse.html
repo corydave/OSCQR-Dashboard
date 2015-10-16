@@ -1,0 +1,36 @@
+<?!= include('Stylesheet'); ?>
+
+<div class='wrapper'>
+  <div class='section'>
+    <div class='content-logo'>
+      <img src='<?!= getLogo() ?>' alt='OpenSUNY Logo' />
+    </div>
+    
+    <div class='content-words'>
+      
+      <span class='regular'><strong>Choose a course to <font color='red'>delete</color>:</strong></span>
+      <br />
+      
+      <select name='courseID' id='courseID'>
+        <?!= getActiveCoursesForDropDown() ?>
+      </select>
+      
+      <br />
+      <br />
+      
+      <p>Deleting a course cannot be undone.</p>
+      
+    </div>
+  </div>
+</div>
+
+<div class='footer'>
+
+  <p class='finePrint'>Note that this operation cannot be undone.</p>
+  
+  <input class='btn-ok' type='button' value='Submit' onclick="deleteCourseHandler(document.getElementById('courseID').value)" />
+  <input class='btn-cancel' type='button' value='Cancel' onclick='google.script.host.close()' />  
+
+</div>
+
+<?!= include('JavaScript'); ?>
