@@ -1,0 +1,21 @@
+<?!= include('Stylesheet'); ?>
+
+<div class='section'>
+  
+  <img src='<?!= getLogo() ?>' alt='OpenSUNY Logo' align='left'>
+  <p>Please enter the name of the new rubric:</p>
+  <input id='nameOfRubric' value='' type='text' name='nameOfRubric'>
+
+</div>
+
+<div class='footer'>
+  
+  <p class='finePrint'>Please only press the 'Submit' button once. This operation may take a few seconds to process,
+  and multiple submissions may result in multiple courses being created.</p>
+  
+  <input class='btn-ok' type='button' value='Submit' onclick="addRubric(document.getElementById('nameOfRubric').value)" />
+  <input class='btn-cancel' type='button' value='Cancel' onclick='google.script.host.close()' />
+
+</div>
+
+<?!= include('JavaScript'); ?>
