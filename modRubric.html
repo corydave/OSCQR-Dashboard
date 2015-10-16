@@ -1,0 +1,31 @@
+<?!= include('Stylesheet'); ?>
+
+<div class='wrapper'>
+  <div class='section'>
+    <div class='content-logo'>
+      <img src='<?!= getLogo() ?>' alt='OpenSUNY Logo' />
+    </div>
+    
+    <div class='content-words'>
+      
+      <span class='regular'><strong>Click on any rubric(s) below to open them in another window:</strong></span>
+      <br />
+      
+      <ul>
+        <?!= rubricsForModifying() ?>
+      </ul>
+      
+      <br />
+      <br />
+      
+    </div>
+  </div>
+</div>
+
+<div class='footer'>
+  
+  <input class='btn-ok' type='button' value='OK' onclick='google.script.host.close()' />
+
+</div>
+
+<?!= include('JavaScript'); ?>
