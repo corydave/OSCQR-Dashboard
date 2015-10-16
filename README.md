@@ -11,5 +11,6 @@ by making a copy of the Google Spreadsheet:
 
 https://docs.google.com/spreadsheets/d/1rakcwMQCFCtdsdlbs4EBZ4kMvO5ORnFXIwHDezc-1pU/edit?usp=sharing
 
+Merely inserting the code will not provide a finished product - most of the analytics rely on formatting/pre-existing data from cells and hidden pages.
 
 Happy programming!
