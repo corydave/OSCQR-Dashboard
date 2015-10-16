@@ -1,0 +1,66 @@
+<script>
+
+function getInfo() {
+  
+  var courseID = document.getElementById("courseID");
+  autoFillFields(courseID.value);
+ 
+}
+
+function autoFillFields(courseID) {
+
+  function onSuccess(result) {
+      document.getElementById("courseName").value = result.field1;
+      document.getElementById("courseDept").value = result.field2;
+      document.getElementById("courseNum").value = result.field3;
+      document.getElementById("courseSec").value = result.field4;
+  }
+  
+  google.script.run.withSuccessHandler(onSuccess).getInfoForModify(courseID);
+
+}
+
+</script>
+
+
+
+<?!= include('Stylesheet'); ?>
+
+<div class='wrapper'>
+  <div class='section'>
+    <div class='content-logo'>
+      <img src='<?!= getLogo() ?>' alt='OpenSUNY Logo' />
+    </div>
+    
+    <div class='content-words'>
+      <form name="form1" method="post" action="">
+        <select id="courseID" name="course_ID" onChange='getInfo()'><option>Choose:</option>
+          
+          <?!= getAllCoursesForDropDown() ?>
+          
+        </select>
+        
+        <br />
+        <br />
+        
+        <p>Course Name<br /><input type="text" id="courseName" name="course_Name" ></p>
+        <p>Department<br /><input type="text" id="courseDept" name="course_Dept" maxlength='3' size='5' ></p>
+        <p>Number<br /><input type="text" id="courseNum" name="course_Num" maxlength='3' size='5' ></p>
+        <p>Section<br /><input type="text" id="courseSec" name="course_Sec" maxlength='3' size='5' ></p>
+      </form>
+    </div>
+    
+  </div>
+</div>
+
+<div class='footer'>
+
+  <p class='finePrint'>Please only press the 'Submit' button once. This operation may take a few seconds to process,
+  and multiple submissions may result in an error.</p>
+  
+  <input class='btn-ok' type='button' value='Submit' onclick="modifyCourseHandler(document.getElementById('courseID').value, document.getElementById('courseName').value, document.getElementById('courseDept').value, document.getElementById('courseNum').value, document.getElementById('courseSec').value)" />
+  <input class='btn-cancel' type='button' value='Cancel' onclick='google.script.host.close()' />  
+
+</div>
+
+<?!= include('JavaScript'); ?>
