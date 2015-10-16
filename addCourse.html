@@ -1,0 +1,71 @@
+<?!= include('Stylesheet'); ?>
+
+<div class='wrapper'>
+  <div class='section'>
+    <div class='content-logo'>
+      <img src='<?!= getLogo() ?>' alt='OpenSUNY Logo' />
+    </div>
+    
+    <div class='content-words'>
+      
+      <span class='regular'><strong>Choose a rubric:</strong></span>
+      <br />
+      
+      <select name='rubric' id='rubric'>
+        <?!= rubricsForDropDown() ?>
+      </select>
+      
+      <br />
+      <br />
+
+      <span class='regular'><strong>Department or program:</strong></span>
+      <br />
+      <span class='helperText'>For instance: MTH or HIS</span>
+      <br />
+      <input id='dept' value='' type='text' name='dept' maxlength='3' size='5'>
+      
+      <br />
+      <br />
+      
+      <span class='regular'><strong>Course:</strong></span>
+      <br />
+      <span class='helperText'>For instance: 101 or 210</span>
+      <br />
+      <input id='course' value='' type='text' name='course' maxlength='3' size='5'>
+      
+      <br />
+      <br />
+      
+      <span class='regular'><strong>Section:</strong></span>
+      <br />
+      <span class='helperText'>For instance: 094 or 120</span>
+      <br />
+      <input id='section' value='' type='text' name='section' maxlength='3' size='5'>
+
+      <br />
+      <br />
+      
+      <span class='regular'><strong>Name of course:</strong></span>
+      <br />
+      <span class='helperText'>For instance: 'Fundamentals of Geometry'</span>
+      <br />
+      <input id='nameOfCourse' value='' type='text' name='nameOfCourse'>
+      
+      
+      
+      
+    </div>
+  </div>
+</div>
+
+<div class='footer'>
+
+  <p class='finePrint'>Please only press the 'Submit' button once. This operation may take a few seconds to process,
+  and multiple submissions may result in multiple courses being created.</p>
+  
+  <input class='btn-ok' type='button' value='Submit' onclick="createCourse(document.getElementById('rubric').value, document.getElementById('dept').value, document.getElementById('course').value, document.getElementById('section').value, document.getElementById('nameOfCourse').value)" />
+  <input class='btn-cancel' type='button' value='Cancel' onclick='google.script.host.close()' />  
+
+</div>
+
+<?!= include('JavaScript'); ?>
