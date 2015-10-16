@@ -1,0 +1,48 @@
+<script>
+
+function addRubric(rubricName) {
+  google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).addRubric(rubricName);
+}
+
+function optionHandler(gatherData, updatePercentages, debug) {
+  google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).optionMenuHandler(gatherData, updatePercentages, debug);
+}
+
+function configureDashboard(course, cscEmail) {
+  google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).configureDashboard(course, cscEmail);
+}
+
+function createCourse(rubric, dept, course, section, nameOfCourse) {
+  google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).createCourse(rubric, dept, course, section, nameOfCourse);
+}
+
+function deleteRubricHandler(rubricID) {
+  google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).deleteRubricHandler(rubricID);
+}
+
+function deleteCourseHandler(courseIDToDelete) {
+  google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).deleteCourseHandler(courseIDToDelete);
+}  
+
+function archiveCourseHandler(courseIDToArchive) {
+  google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).archiveCourseHandler(courseIDToArchive);
+}
+
+function restoreCourseHandler(courseIDToRestore) {
+  google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).restoreCourseHandler(courseIDToRestore);
+}
+
+function modifyCourseHandler(courseID, name, dept, number, section) {
+  google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).modifyCourseHandler(courseID, name, dept, number, section);
+}
+
+function onSuccess() {
+  google.script.host.close();
+}
+
+function onFailure(error) {
+  alert('ERROR: ' + error);
+}
+
+
+</script>
