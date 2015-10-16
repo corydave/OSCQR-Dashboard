@@ -1,0 +1,34 @@
+<?!= include('Stylesheet'); ?>
+
+<div class='wrapper'>
+  <div class='section'>
+    <div class='content-logo'>
+      <img src='<?!= getLogo() ?>' alt='OpenSUNY Logo' />
+    </div>
+    
+    <div class='content-words'>
+      
+      <span class='regular'><strong>Choose a rubric to delete:</strong></span>
+      <br />
+      
+      <select name='rubric' id='rubric'>
+        <?!= getRubricsForDropDown() ?>
+      </select>
+      
+      <br />
+      <br />
+
+    </div>
+  </div>
+</div>
+
+<div class='footer'>
+
+  <p class='finePrint'>Note that this operation cannot be undone.</p>
+  
+  <input class='btn-ok' type='button' value='Submit' onclick="deleteRubricHandler(document.getElementById('rubric').value)" />
+  <input class='btn-cancel' type='button' value='Cancel' onclick='google.script.host.close()' />  
+
+</div>
+
+<?!= include('JavaScript'); ?>
