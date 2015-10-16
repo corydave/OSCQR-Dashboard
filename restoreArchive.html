@@ -1,0 +1,36 @@
+<?!= include('Stylesheet'); ?>
+
+<div class='wrapper'>
+  <div class='section'>
+    <div class='content-logo'>
+      <img src='<?!= getLogo() ?>' alt='OpenSUNY Logo' />
+    </div>
+    
+    <div class='content-words'>
+      
+      <span class='regular'><strong>Choose a course to restore:</strong></span>
+      <br />
+      
+      <select name='courseToRestore' id='courseToRestore'>
+        <?!= getArchivedCoursesForDropDown() ?>
+      </select>
+      
+      <br />
+      <br />
+
+      
+    </div>
+  </div>
+</div>
+
+<div class='footer'>
+
+  <p class='finePrint'>Please only press the 'Submit' button once. This operation may take a few seconds to process,
+  and multiple submissions may result in an error.</p>
+  
+  <input class='btn-ok' type='button' value='Submit' onclick="restoreCourseHandler(document.getElementById('courseToRestore').value)" />
+  <input class='btn-cancel' type='button' value='Cancel' onclick='google.script.host.close()' />  
+
+</div>
+
+<?!= include('JavaScript'); ?>
