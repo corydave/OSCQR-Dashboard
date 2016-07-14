@@ -7,7 +7,7 @@
 // You can become a member by enrolling in the Community of Practice at: http://commons.suny.edu/cote/community/
 
 // All code in this software was written by Dave Ghidiu (daveghidiu@gmail.com)
-// Every last bit. And yes, he knows it's a bit sloppy at some points
+// Every last bit. And yes, he knows it's a bit sloppy at some points.
 
 // The software is provided "as is", without warranty of any kind, express or implied. In no event shall the authors or copyright holders be liable for
 // any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of, or in connection with the software
@@ -184,11 +184,11 @@
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
 // GLOBAL VARIABLES
-var VERSION = '1.7.0';
+var VERSION = '3.0';
 var LOGO = 'https://bbsupport.sln.suny.edu/bbcswebdav/institution/OSCQR.png';
 var ACTIVE = SpreadsheetApp.getActive().getSheetByName("Active");
 var ARCHIVED = SpreadsheetApp.getActive().getSheetByName("Archived");
-var OS_RUBRIC = '1ICwNCdRQTw7thRKCMLonrVaoyIin584gjUcu96YGzS8';
+var OS_RUBRIC = '11gZstRZ-uyg9PE8R-FbRwlCIMd7sym0rKYVtPj6crmw';
 // --------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -202,7 +202,8 @@ function test() {
   // This space reserved for experimentation
   
   try {
-    
+  
+
   
   } catch (error) {
   
@@ -238,7 +239,8 @@ function onOpen() {
     hide('ACCESSIBILITY');
     hide('DESIGN');
     hide('leftColumn-ACC');
-    hide('leftColumn-DES');    
+    hide('leftColumn-DES');
+    hide('leftColumn-DES3');    
     findAndDelete('Analytics - Accessibility');
     findAndDelete('Analytics - Design');
       
@@ -350,7 +352,8 @@ function configureDashboard(campus, cscEmail) {
     var thisEmail = cscEmail || 'nul';
     
     // Sanitize the campus name (make sure there are 3 letters)
-    thisCampus = cleanName(thisCampus).toUpperCase();
+    // When uncommented, the following line limits the name of the campus to three letters.    
+//    thisCampus = cleanName(thisCampus).toUpperCase();
     
     // Get the variables (from the master OS Rubric - CONFIG) needed for establishing the script properties
     var tempRange = SpreadsheetApp.openById(OS_RUBRIC).getRange('CONFIG!L2:L6').getValues();
@@ -385,7 +388,8 @@ function configureDashboard(campus, cscEmail) {
       DriveApp.getRootFolder().removeFolder(rubricFolder);
 
       // Copy the master Open SUNY Rubric into the RUBRICS folder
-      var masterRubric = DriveApp.getFileById(rubricToCopy).makeCopy(rubricFolder).setName("Open SUNY Rubric");
+//      var masterRubric = DriveApp.getFileById(rubricToCopy).makeCopy(rubricFolder).setName("Open SUNY Rubric");
+      var masterRubric = DriveApp.getFileById(rubricToCopy).makeCopy(rubricFolder).setName("OSCQR 3.0");      
       
       // Store the folder keys into script properties
       PropertiesService.getScriptProperties().setProperties({'debug': 'false', 'campusFolderArchivedKey': archivedFolderKey, 'campusFolderInProgressKey': activeFolderKey, 'rubricFolderKey': rubricFolderKey});
@@ -421,8 +425,8 @@ function configureDashboard(campus, cscEmail) {
     
   } catch (error) {
   
-    Browser.msgBox("The function \"configDashboard(course, cscEmail)\" did not run. Please contact technical support.\\nError Code " + error.lineNumber + ": " + error);
-    Logger.log("configDashboard(course, cscEmail) terminated unexpectedly:   " + error  + " - Line " + error.lineNumber);
+    Browser.msgBox("The function \"configureDashboard(course, cscEmail)\" did not run. Please contact technical support.\\nError Code " + error.lineNumber + ": " + error);
+    Logger.log("configureDashboard(course, cscEmail) terminated unexpectedly:   " + error  + " - Line " + error.lineNumber);
     
   }
 }
@@ -712,11 +716,27 @@ function fillSheetWithCourses(sheet) {
       var tempFile = files.next();
       var tempName = tempFile.getName();
       var workingName = tempName.substring(tempName.indexOf(':')+2);
-      var campus = workingName.substring(0,3);
-      var dept = workingName.substring(4,7);
-      var course = workingName.substring(8,11);
-      var section = workingName.substring(12,15);
-      var courseConcat = campus + workingName.substring(3,4) + dept + workingName.substring(7,8) + course + workingName.substring(11,12) + section;
+      
+//      MONR-ABCD-12222-34
+//      012345678901234567
+//      Browser.msgBox(workingName);
+      
+      var campus = workingName.substring(0,workingName.indexOf("-"));
+      workingName = workingName.substring(workingName.indexOf("-") +1);
+//      Browser.msgBox(workingName);
+      
+      var dept = workingName.substring(0,workingName.indexOf("-"));
+      workingName = workingName.substring(workingName.indexOf("-") +1);
+//      Browser.msgBox(workingName);
+      
+      var course = workingName.substring(0,workingName.indexOf("-"));
+      workingName = workingName.substring(workingName.indexOf("-") +1);
+//      Browser.msgBox(workingName);
+      
+      var section = workingName;
+//      var courseConcat = campus + workingName.substring(3,4) + dept + workingName.substring(7,8) + course + workingName.substring(11,12) + section;
+//      var courseConcat = campus + '-' + dept + '-' + course + '-' + section;
+      var courseConcat = dept + '-' + course + '-' + section;      
       var space = "";
       
       // Add the information for each course to the bottom of the document
@@ -872,8 +892,8 @@ function updatePercentages() {
 
   try {
   
-    updatePercentage(ACTIVE);
-    updatePercentage(ARCHIVED);
+//    updatePercentage(ACTIVE);
+//    updatePercentage(ARCHIVED);
   
   } catch (error) {
   
@@ -1331,9 +1351,12 @@ function formatTableSheet(sheet) {
     
     }
     
-    sheet.hideColumns(14, 3);
+    sheet.hideColumns(14, 2);
     sheet.hideColumns(12,1);
-    sheet.setColumnWidth(17, 450)
+    sheet.setColumnWidth(17, 450);
+    sheet.setColumnWidth(9, 40);
+    
+    sheet.getRange("I2:L" + sheet.getMaxRows()).setNumberFormat("0%")
     
   } catch (error) {
   
@@ -1450,7 +1473,7 @@ function generateHeaderSheet(sheet) {
     
     var header = [
       ["", "CAMPUS", "DEPT", "NUM", "SEC", "SHEET ID", "LINK", "COURSE NAME", "ID", "Faculty",
-       "Reviewer", "% Complete", "TIME TO REFRESH", "Action Plan?", "Progress of Refresh?", "Learning Review?", "NOTES", ""]
+       "Reviewer 1", "Reviewer 2", "TIME TO REFRESH", "Action Plan?", "Progress of Refresh?", "ID", "NOTES", ""]
     ];
     
     sheet.getRange("A1:R1").setValues(header);
@@ -1931,9 +1954,13 @@ function createCourse(rubric, dept, course, section, nameOfCourse) {
       }
     }
     
-    dept = cleanName(dept).toUpperCase();
-    course = cleanName(course).toUpperCase();
-    section = cleanName(section).toUpperCase();
+//    TO ENABLE CHARACTER LIMITS ON SECTIONS AND DEPARTMENTS, UNCOMMENT THE FOLLOWING
+//    ALSO, CHANGE THE NUMBER OF CHARACTERS IN THE cleanName(nameData) METHOD
+    
+    
+//    dept = cleanName(dept).toUpperCase();
+//    course = cleanName(course).toUpperCase();
+//    section = cleanName(section).toUpperCase();
     
     // Get the "Dashboard" sheet
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -1944,7 +1971,8 @@ function createCourse(rubric, dept, course, section, nameOfCourse) {
     
     // Concatenate info into one string (for file naming)
     var fullName = campus + '-' + dept + '-' + course + '-' + section;
-    
+    var displayName = dept + '-' + course + '-' + section;
+        
     if (debug()) {
       Browser.msgBox("DEBUG: Concatenated name: " + fullName);
     }
@@ -1968,7 +1996,7 @@ function createCourse(rubric, dept, course, section, nameOfCourse) {
     tempRubric.getRange("CONFIG!E6").setValue(rubric);
     tempRubric.getRange("CONFIG!F2").setValue(VERSION);    
     
-    ss.appendRow([blank, campus, dept, course, section, tempFileID, '=hyperlink(\"' + DriveApp.getFileById(tempFileID).getUrl() + '\";\"' + fullName + '\")', nameOfCourse,]);
+    ss.appendRow([blank, campus, dept, course, section, tempFileID, '=hyperlink(\"' + DriveApp.getFileById(tempFileID).getUrl() + '\";\"' + displayName + '\")', nameOfCourse,]);
     
     var tempPercentages = SpreadsheetApp.openById(tempFileID).getSheetByName("CONFIG").getRange("O30:R30");
     var lastRow = ACTIVE.getLastRow();
@@ -2008,13 +2036,15 @@ function cleanName(nameData) {
   
   try {
     
-    // Ensure that the nameData is no more than 3 characters
-    if (nameData.length > 3) {
-      nameData = nameData.substring(0,3);
+    var lengthOfString = 4;
+    
+// Ensure that the nameData is no more than 3 characters
+    if (nameData.length > lengthOfString) {
+      nameData = nameData.substring(0,lengthOfString);
     }
     
-    // In the event nameData is less than 3 characters in length, prepend "0"s
-    while (nameData.length < 3) {
+// In the event nameData is less than 3 characters in length, prepend "0"s
+    while (nameData.length < lengthOfString) {
       nameData = "0" + nameData;
     }
   
@@ -2221,9 +2251,13 @@ function modifyCourseHandler(courseID, name, dept, number, section) {
     
     var tempRange = tempRubric.getRange("CONFIG!B2:B7").getValues();
     
-    dept = cleanName(dept).toUpperCase();
-    number = cleanName(number).toUpperCase();
-    section = cleanName(section).toUpperCase();
+//    dept = cleanName(dept).toUpperCase();
+//    number = cleanName(number).toUpperCase();
+//    section = cleanName(section).toUpperCase();
+    
+    dept = dept.toUpperCase();
+    number = number.toUpperCase();
+    section = section.toUpperCase();    
     
     var campus = tempRange[2][0];
     var concatName = campus + "-" + dept + "-" + number + "-" + section;
@@ -3867,6 +3901,9 @@ function getDesignData() {
     resetDesignSheet();
     gatherDesignMetrics();
     analyzeDesignMetrics();
+    
+    // NOTE: The method removeReviewerBlanks() should be commented out in the event the Reviewer standards are to be tallied
+//    removeReviewerBlanks();
   
   } catch (error) {
   
@@ -3917,7 +3954,7 @@ function resetDesignSheet() {
         }
       }
     
-    ss.getSheetByName('leftColumn-DES').copyTo(SpreadsheetApp.openById(ss.getId())).setName('DESIGN').hideSheet();
+    ss.getSheetByName('leftColumn-DES3').copyTo(SpreadsheetApp.openById(ss.getId())).setName('DESIGN').hideSheet();
     
   } catch (error) {
       
@@ -3968,22 +4005,27 @@ function gatherDesignMetrics() {
     for (var i = 0; i < keys.length; i++) {
        
       // Get the Spreadsheet ID from current row, open the Spreadsheet, grab accessibility metrics from "CONFIG" tab
-      var tempRange = SpreadsheetApp.openById(keys[i]).getRange('CONFIG!I126:I327').getValues();
-       
+      var tempRange = SpreadsheetApp.openById(keys[i]).getRange('CONFIG!Z36:Z272').getValues();
+
       // Set the column header to be the name of the course (note that the name is the last element in the array)
       desSheet.getRange(1, i+9).setValue(tempRange[tempRange.length-1]);
              
       // Put data from the tempRange array and put it into the current column
       tempRange.splice(tempRange.length-1,1);
       var rangeToPutData = desSheet.getRange(2,i+9, tempRange.length, 1);
+      
       rangeToPutData.setValues(tempRange);
      
     }
       
     // HOUSEKEEPING - Format the headers
     for (var i = 4; i <= desSheet.getMaxColumns(); i++) {
-        desSheet.setColumnWidth(i, 32);
-      }
+      desSheet.setColumnWidth(i, 32);
+    }
+    
+    // Overlay the proper cells for quick analytics
+    var tempOverlay = SpreadsheetApp.getActive().getRange('leftColumn-DES3!C2:G2').getValues();
+    SpreadsheetApp.getActive().getRange('DESIGN!C2:G2').setValue(tempOverlay);
   
   } catch (error) {
     
@@ -4007,26 +4049,30 @@ function analyzeDesignMetrics() {
     // Get the 'DESIGN' sheet
     var sheet = SpreadsheetApp.getActive().getSheetByName('DESIGN');
     
-    // Set the number of design standards (default is 67 -> 37 from Open SUNY, plus 30 more customizeable)
-    var numOfDesignStandards = 67;
+    // Set the number of design standards (default is 59 from Open SUNY)
+    var numOfDesignStandards = 59;
     
     // Figure out how many courses there are by counting the number of columns in the sheet and subtracting 8
     var numOfCourses = sheet.getMaxColumns() - 8;
     
-    // Put the number of courses (and multiply by 3 because there are 3 reviewers) into cell A53 for subtraction purposes (NA + NR)
-    sheet.getRange('A204').setValue(numOfCourses*3);
+    // Put the number of courses (and multiply by 4 because there are 4 reviewers) into cell A53 for subtraction purposes (NA + NR)
+    sheet.getRange('A243').setValue(numOfCourses*4);
     
-    //Walk through each row and compute the average for each row by calling coputeAverage()
-    for (var i = 2; i < 3*numOfDesignStandards+2; i++) {
-      
-      sheet.getRange(i,3,1,1).setValue(getCount('SP', sheet.getRange(i,9,1,numOfCourses).getValues()));
-      sheet.getRange(i,4,1,1).setValue(getCount('MI', sheet.getRange(i,9,1,numOfCourses).getValues()));
-      sheet.getRange(i,5,1,1).setValue(getCount('MO', sheet.getRange(i,9,1,numOfCourses).getValues()));
-      sheet.getRange(i,6,1,1).setValue(getCount('MA', sheet.getRange(i,9,1,numOfCourses).getValues()));
-      sheet.getRange(i,7,1,1).setValue(getCount('NA', sheet.getRange(i,9,1,numOfCourses).getValues()));
-      sheet.getRange(i,8,1,1).setValue(getCount('NR', sheet.getRange(i,9,1,numOfCourses).getValues()));
-      
-    }
+    //Walk through each row and compute the average for each row by calling computeAverage()
+//    for (var i = 2; i < 237; i++) {
+//      
+//      sheet.getRange(i,3,1,1).setValue(getCount('SP', sheet.getRange(i,9,1,numOfCourses).getValues()));
+//      sheet.getRange(i,4,1,1).setValue(getCount('MI', sheet.getRange(i,9,1,numOfCourses).getValues()));
+//      sheet.getRange(i,5,1,1).setValue(getCount('MO', sheet.getRange(i,9,1,numOfCourses).getValues()));
+//      sheet.getRange(i,6,1,1).setValue(getCount('MA', sheet.getRange(i,9,1,numOfCourses).getValues()));
+//      sheet.getRange(i,7,1,1).setValue(getCount('NA', sheet.getRange(i,9,1,numOfCourses).getValues()));
+//      sheet.getRange(i,8,1,1).setValue(getCount('NR', sheet.getRange(i,9,1,numOfCourses).getValues()));
+//      
+//    }
+
+    // Overlay the proper cells for quick analytics
+    var tempOverlay = SpreadsheetApp.getActive().getRange('leftColumn-DES3!C2:H237').getFormulas();
+    SpreadsheetApp.getActive().getRange('DESIGN!C2:H237').setValues(tempOverlay);    
     
     // Update date of last data pull
     PropertiesService.getScriptProperties().setProperty('lastDesignPull', getDayDate())
@@ -4039,6 +4085,40 @@ function analyzeDesignMetrics() {
     Browser.msgBox("The function \"analyzeDesignMetrics()\" did not run. Please contact technical support.\\n\\n" + error.lineNumber + " " + error);
     Logger.log("analyzeDesignMetrics() terminated unexpectedly:   " + error + " - Line " + error.lineNumber);      
   
+  }
+}
+
+
+
+/**
+ * @description Goes to DESIGN tab and wipes out data from rows that the Reviewer (naturally) does not fill out
+ * @type function
+ * 
+ * NOTE: This method should be commented out in the event the Reviewer standards are to be tallied
+ *
+ */
+function removeReviewerBlanks() {
+
+  try {
+  
+    // Get the 'DESIGN' sheet
+    var sheet = SpreadsheetApp.getActive().getSheetByName('DESIGN');
+    
+    sheet.getRange("C136:H138").clear();
+    sheet.getRange("C140:H140").clear();
+    sheet.getRange("C143:H145").clear();
+    sheet.getRange("C147:H150").clear();
+    sheet.getRange("C152:H158").clear();
+    sheet.getRange("C160:H161").clear();
+    sheet.getRange("C163:H164").clear();
+    sheet.getRange("C167:H168").clear();
+
+  
+  } catch (error) {
+
+    Browser.msgBox("The function \"removeReviewerBlanks()\" did not run. Please contact technical support.\\n\\n" + error.lineNumber + " " + error);
+    Logger.log("removeReviewerBlanks() terminated unexpectedly:   " + error + " - Line " + error.lineNumber);  
+    
   }
 }
 
@@ -4080,16 +4160,18 @@ function graphDesignMetrics() {
     var ss = SpreadsheetApp.getActive();
     var sheet = ss.getSheetByName('Analytics - Design');
     
-    sheet.setColumnWidth(5, 750);
-    sheet.deleteRows(100, sheet.getMaxRows()-100)
+    sheet.setColumnWidth(5, 950);
+    sheet.deleteRows(200, sheet.getMaxRows()-200)
     sheet.setColumnWidth(1, 10);
     sheet.setColumnWidth(2, 10);
     sheet.setColumnWidth(3, 10);    
     sheet.setColumnWidth(4, 10);
     
-    drawDesignGraphHeight(sheet, 850, 'DESIGN!B204:G227', 5, "Content & Presentation");    
-    drawDesignGraph(sheet, 'DESIGN!B229:G237', 46, "Interaction & Collaboration");
-    drawDesignGraph(sheet, 'DESIGN!B239:G245', 64, "Evaluation & Assessment");
+    drawDesignGraphHeight(sheet, 650, 'DESIGN!B243:G253', 5, "Overview & Information");    
+    drawDesignGraphHeight(sheet, 450, 'DESIGN!B255:G260', 37, "Technology & Tools");
+    drawDesignGraphHeight(sheet, 650, 'DESIGN!B262:G275', 59, "Design & Layout");
+    drawDesignGraphHeight(sheet, 650, 'DESIGN!B277:G286', 91, "Content & Activities");
+    drawDesignGraphHeight(sheet, 650, 'DESIGN!B288:G294', 123, "Interaction");    
 
   } catch (error) {
 
@@ -4118,13 +4200,14 @@ function drawDesignGraph(sheet, data, location, title) {
     var colNumber = 5;
     var range = sheet.getRange(data);
     var chartBuilder = sheet.newChart();
+    var width = 915;
     
     chartBuilder.addRange(range)
       .asBarChart()
       .setStacked()
       .setLegendPosition(Charts.Position.BOTTOM)
       .setPosition(location, colNumber, 0, 0)
-      .setOption('width', 700)
+      .setOption("width", width)
       .setOption("title", title)
       .setOption(
         "titleTextStyle", {
@@ -4164,13 +4247,14 @@ function drawDesignGraphHeight(sheet, height, data, location, title) {
     var colNumber = 5;
     var range = sheet.getRange(data);
     var chartBuilder = sheet.newChart();
+    var width = 915;
     
     chartBuilder.addRange(range)
       .asBarChart()
       .setStacked()
       .setLegendPosition(Charts.Position.BOTTOM)
       .setPosition(location, colNumber, 0, 0)
-      .setOption('width', 700)
+      .setOption('width', width)
       .setOption('height', height)
       .setOption("title", title)
       .setOption(
@@ -4233,7 +4317,7 @@ function generateMenu() {
         .addSubMenu(SpreadsheetApp.getUi().createMenu('Dashboard')
           .addItem('Add a course', 'addCourse')
           .addItem('Delete a course', 'deleteCourse')
-          .addItem('Modify properties for a specific course', 'modifyCourse')
+//          .addItem('Modify properties for a specific course', 'modifyCourse')
           .addSeparator()          
           .addItem('Update percentages/comments for all courses ', 'updateAllInformation')
           .addItem('Refresh file list', 'reconstructTree'))
@@ -4244,10 +4328,7 @@ function generateMenu() {
         .addSeparator()
         .addSubMenu(SpreadsheetApp.getUi().createMenu('Analytics')
           .addItem('Update Design Analytics - ' + getLastDesignDate(), 'getDesignData')
-          .addItem('Graph Design Analytics', 'getDesignGraphs')
-          .addSeparator()
-          .addItem('Update Accessibility Analytics - ' + getLastAccessibilityDate(), 'getAccessibilityData')
-          .addItem('Graph Accessibility Analytics', 'getAccessibilityGraphs'))
+          .addItem('Graph Design Analytics', 'getDesignGraphs'))
         .addSeparator()
         .addSubMenu(SpreadsheetApp.getUi().createMenu('Rubric')
           .addItem('Create new rubric', 'createNewRubric')
@@ -4274,7 +4355,7 @@ function generateMenu() {
         .addSubMenu(SpreadsheetApp.getUi().createMenu('Debugging Normal Functions')
           .addItem('Add a course', 'addCourse')
           .addItem('Delete a course', 'deleteCourse')
-          .addItem('Modify properties for a specific course', 'modifyCourse')          
+//          .addItem('Modify properties for a specific course', 'modifyCourse')          
           .addItem('Update status for all courses ', 'updateAllInformation')
           .addItem('Refresh data for all courses', 'reconstructTree')
           .addItem('Copy remarks to rubrics', 'copySheetRemarksToRubric')          
@@ -4319,7 +4400,7 @@ function generateMenu() {
         .addSubMenu(SpreadsheetApp.getUi().createMenu('Dashboard')
           .addItem('Add a course', 'addCourse')
           .addItem('Delete a course', 'deleteCourse')
-          .addItem('Modify properties for a specific course', 'modifyCourse')
+//          .addItem('Modify properties for a specific course', 'modifyCourse')
           .addSeparator()          
           .addItem('Update percentages/comments for all courses ', 'updateAllInformation')
           .addItem('Refresh file list', 'reconstructTree'))
@@ -4328,12 +4409,9 @@ function generateMenu() {
           .addItem('Archive a course', 'archiveCourse')
           .addItem('Restore an archived course', 'restoreArchive'))
         .addSeparator()
-        .addSubMenu(SpreadsheetApp.getUi().createMenu('Analytics')
-          .addItem('Update Design Analytics - ' + getLastDesignDate(), 'getDesignData')
-          .addItem('Graph Design Analytics', 'getDesignGraphs')
-          .addSeparator()
-          .addItem('Update Accessibility Analytics - ' + getLastAccessibilityDate(), 'getAccessibilityData')
-          .addItem('Graph Accessibility Analytics', 'getAccessibilityGraphs'))
+//        .addSubMenu(SpreadsheetApp.getUi().createMenu('Analytics')
+//          .addItem('Update Design Analytics - ' + getLastDesignDate(), 'getDesignData')
+//          .addItem('Graph Design Analytics', 'getDesignGraphs'))
         .addSeparator()
         .addSubMenu(SpreadsheetApp.getUi().createMenu('Rubric')
           .addItem('Create new rubric', 'createNewRubric')
